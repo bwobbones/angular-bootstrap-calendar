@@ -230,7 +230,7 @@ angular
 
     }
 
-    function getDayView(events, viewDate, dayViewStart, dayViewEnd, dayViewSplit, dayViewEventWidth) {
+    function getDayView(events, viewDate, dayViewStart, dayViewEnd, dayViewSplit, dayViewEventWidth, dayViewEventChunkSize) {
 
       var dayStart = (dayViewStart || '00:00').split(':');
       var dayEnd = (dayViewEnd || '23:59').split(':');
@@ -254,7 +254,7 @@ angular
           minute: dayEnd[1]
         },
         eventWidth: dayViewEventWidth ? +dayViewEventWidth : 150,
-        segmentHeight: 30
+        segmentHeight: dayViewEventChunkSize || 30
       });
 
       // remove hack to work with new event API
@@ -308,10 +308,10 @@ angular
       return weekView;
     }
 
-    function getDayViewHeight(dayViewStart, dayViewEnd, dayViewSplit) {
+    function getDayViewHeight(dayViewStart, dayViewEnd, dayViewSplit, dayViewEventChunkSize) {
       var dayViewStartM = moment(dayViewStart || '00:00', 'HH:mm');
       var dayViewEndM = moment(dayViewEnd || '23:59', 'HH:mm');
-      var hourHeight = (60 / dayViewSplit) * 30;
+      var hourHeight = (60 / dayViewSplit) * (dayViewEventChunkSize || 30);
       return ((dayViewEndM.diff(dayViewStartM, 'minutes') / 60) * hourHeight) + 3;
     }
 
