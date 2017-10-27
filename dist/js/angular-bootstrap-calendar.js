@@ -1,6 +1,6 @@
 /**
  * angular-bootstrap-calendar - A pure AngularJS bootstrap themed responsive calendar that can display events and has views for year, month, week and day
- * @version v0.29.3
+ * @version v0.30.0
  * @link https://github.com/mattlewis92/angular-bootstrap-calendar
  * @license MIT
  */
@@ -1809,6 +1809,7 @@ angular
       }
 
       vm.events = vm.events || [];
+      vm.excludedDays = vm.excludedDays || [];
 
       var previousDate = moment(vm.viewDate);
       var previousView = vm.view;
@@ -1908,6 +1909,7 @@ angular
         viewDate: '=',
         cellIsOpen: '=?',
         cellAutoOpenDisabled: '=?',
+        excludedDays: '=?',
         slideBoxDisabled: '=?',
         customTemplateUrls: '=?',
         draggableAutoScroll: '=?',
@@ -2261,11 +2263,11 @@ angular
       vm.openRowIndex = null;
       vm.openDayIndex = null;
 
-      if (vm.cellIsOpen && vm.view) {
+      if (vm.cellIsOpen && vm.view && vm.weekDays) {
         vm.view.forEach(function(day, dayIndex) {
           if (moment(vm.viewDate).startOf('day').isSame(day.date)) {
             vm.openDayIndex = dayIndex;
-            vm.openRowIndex = Math.floor(dayIndex / 7);
+            vm.openRowIndex = Math.floor(dayIndex / vm.weekDays.length);
           }
         });
       }
@@ -2273,9 +2275,9 @@ angular
 
     $scope.$on('calendar.refreshView', function() {
 
-      vm.weekDays = calendarHelper.getWeekDayNames();
+      vm.weekDays = calendarHelper.getWeekDayNames(vm.excludedDays);
 
-      var monthView = calendarHelper.getMonthView(vm.events, vm.viewDate, vm.cellModifier);
+      var monthView = calendarHelper.getMonthView(vm.events, vm.viewDate, vm.cellModifier, vm.excludedDays);
       vm.view = monthView.days;
       vm.monthOffsets = monthView.rowOffsets;
 
@@ -2314,7 +2316,7 @@ angular
           vm.cellIsOpen = false;
         } else {
           vm.openDayIndex = dayIndex;
-          vm.openRowIndex = Math.floor(dayIndex / 7);
+          vm.openRowIndex = Math.floor(dayIndex / vm.weekDays.length);
           vm.cellIsOpen = true;
         }
       }
@@ -2416,6 +2418,7 @@ angular
       scope: {
         events: '=',
         viewDate: '=',
+        excludedDays: '=',
         onEventClick: '=',
         onEventTimesChanged: '=',
         onDateRangeSelect: '=',
@@ -2525,7 +2528,7 @@ angular
           vm.dayViewSplit
         );
       } else {
-        vm.view = calendarHelper.getWeekView(vm.events, vm.viewDate);
+        vm.view = calendarHelper.getWeekView(vm.events, vm.viewDate, vm.excludedDays);
       }
     });
 
@@ -2587,6 +2590,7 @@ angular
       scope: {
         events: '=',
         viewDate: '=',
+        excludedDays: '=',
         onEventClick: '=',
         onEventTimesChanged: '=',
         dayViewStart: '=',
@@ -2799,9 +2803,21 @@ angular
       if (angular.isDefined($attrs.setToToday)) {
         vm.date = new Date();
       } else if (angular.isDefined($attrs.increment)) {
-        vm.date = moment(vm.date).add(1, vm.increment).toDate();
+        vm.date = moment(vm.date).add(1, vm.increment);
+        if (vm.excludedDays && vm.increment.indexOf('day') > -1) {
+          while (vm.excludedDays.indexOf(vm.date.day()) > -1) {
+            vm.date.add(1, vm.increment);
+          }
+        }
+        vm.date = vm.date.toDate();
       } else if (angular.isDefined($attrs.decrement)) {
-        vm.date = moment(vm.date).subtract(1, vm.decrement).toDate();
+        vm.date = moment(vm.date).subtract(1, vm.decrement);
+        if (vm.excludedDays && vm.decrement.indexOf('day') > -1) {
+          while (vm.excludedDays.indexOf(vm.date.day()) > -1) {
+            vm.date.subtract(1, vm.decrement);
+          }
+        }
+        vm.date = vm.date.toDate();
       }
       $scope.$apply();
     }
@@ -2821,7 +2837,8 @@ angular
       scope: {
         date: '=',
         increment: '=',
-        decrement: '='
+        decrement: '=',
+        excludedDays: '=?'
       },
       bindToController: true
     };
@@ -3731,12 +3748,17 @@ angular
       }).length;
     }
 
-    function getWeekDayNames() {
-      var weekdays = [];
-      var count = 0;
-      while (count < 7) {
-        weekdays.push(formatDate(moment().weekday(count++), calendarConfig.dateFormats.weekDay));
-      }
+    function getWeekDayNames(excluded) {
+      var weekdays = [0, 1, 2, 3, 4, 5, 6]
+      .filter(function(wd) {
+        return !(excluded || []).some(function(ex) {
+          return ex === wd;
+        });
+      })
+      .map(function(i) {
+        return formatDate(moment().weekday(i), calendarConfig.dateFormats.weekDay);
+      });
+
       return weekdays;
     }
 
@@ -3776,7 +3798,7 @@ angular
       return event;
     }
 
-    function getMonthView(events, viewDate, cellModifier) {
+    function getMonthView(events, viewDate, cellModifier, excluded) {
 
       // hack required to work with the calendar-utils api
       events.forEach(function(event) {
@@ -3790,6 +3812,7 @@ angular
       var view = calendarUtils.getMonthView({
         events: events,
         viewDate: viewDate,
+        excluded: excluded,
         weekStartsOn: moment().startOf('week').day()
       });
 
@@ -3814,10 +3837,11 @@ angular
 
     }
 
-    function getWeekView(events, viewDate) {
+    function getWeekView(events, viewDate, excluded) {
 
       var days = calendarUtils.getWeekViewHeader({
         viewDate: viewDate,
+        excluded: excluded,
         weekStartsOn: moment().startOf('week').day()
       }).map(function(day) {
         day.date = moment(day.date);
@@ -3832,6 +3856,7 @@ angular
       var eventRows = calendarUtils.getWeekView({
         viewDate: viewDate,
         weekStartsOn: moment().startOf('week').day(),
+        excluded: excluded,
         events: filterEventsInPeriod(events, startOfWeek, endOfWeek).map(function(event) {
 
           var weekViewStart = moment(startOfWeek).startOf('day');
