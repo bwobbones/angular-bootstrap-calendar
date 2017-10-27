@@ -79,4 +79,7 @@
 }, {
   "key": "disable-tooltips",
   "label": "Disable tooltips"
+}, {
+  "key": "hour-part-height",
+  "label": "Set the hour part height on day view"
 }]

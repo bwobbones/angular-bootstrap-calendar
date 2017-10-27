@@ -19,7 +19,8 @@ angular
       vm.dayViewHeight = calendarHelper.getDayViewHeight(
         vm.dayViewStart,
         vm.dayViewEnd,
-        vm.dayViewSplit
+        vm.dayViewSplit,
+        vm.dayViewEventChunkSize
       );
 
       var view = calendarHelper.getDayView(
@@ -28,7 +29,8 @@ angular
         vm.dayViewStart,
         vm.dayViewEnd,
         vm.dayViewSplit,
-        vm.dayViewEventWidth
+        vm.dayViewEventWidth,
+        vm.dayViewEventChunkSize
       );
 
       vm.allDayEvents = view.allDayEvents;
