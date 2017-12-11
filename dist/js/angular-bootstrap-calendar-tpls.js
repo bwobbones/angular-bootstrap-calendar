@@ -3139,7 +3139,7 @@ angular
     }
 
     var DROP_ACTIVE_CLASS = $attrs.dropActiveClass || 'drop-active';
-    var INTERACT_OVERLAP_TYPE = $attrs.mwlDroppable || 'pointer';
+    var INTERACT_OVERLAP_TYPE = $attrs.dropOverlap || 'pointer';
 
     interact($element[0]).dropzone({
       ondragenter: function(event) {
