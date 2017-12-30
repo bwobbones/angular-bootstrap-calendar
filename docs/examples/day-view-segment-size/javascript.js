@@ -7,6 +7,7 @@ angular
     vm.calendarView = 'day';
     vm.viewDate = moment().startOf('month').toDate();
 
+    // note that this class is required to set the hour part height in the css
     vm.cellModifier = function(cell) {
       cell.cssClass = 'my-custom-class';
     }

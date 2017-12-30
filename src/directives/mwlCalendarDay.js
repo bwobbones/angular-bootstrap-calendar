@@ -20,7 +20,7 @@ angular
         vm.dayViewStart,
         vm.dayViewEnd,
         vm.dayViewSplit,
-        vm.dayViewEventChunkSize
+        vm.dayViewSegmentSize
       );
 
       var view = calendarHelper.getDayView(
@@ -30,7 +30,7 @@ angular
         vm.dayViewEnd,
         vm.dayViewSplit,
         vm.dayViewEventWidth,
-        vm.dayViewEventChunkSize
+        vm.dayViewSegmentSize
       );
 
       vm.allDayEvents = view.allDayEvents;
@@ -108,6 +108,7 @@ angular
         dayViewEnd: '=',
         dayViewSplit: '=',
         dayViewEventChunkSize: '=',
+        dayViewSegmentSize: '=',
         dayViewEventWidth: '=',
         customTemplateUrls: '=?',
         cellModifier: '=',
