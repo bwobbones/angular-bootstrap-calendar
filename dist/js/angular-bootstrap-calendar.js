@@ -483,6 +483,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SECONDS_IN_DAY", function() { return SECONDS_IN_DAY; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SECONDS_IN_WEEK", function() { return SECONDS_IN_WEEK; });
 /* harmony export (immutable) */ __webpack_exports__["getWeekViewEventOffset"] = getWeekViewEventOffset;
+/* harmony export (immutable) */ __webpack_exports__["getEventsInPeriod"] = getEventsInPeriod;
 /* harmony export (immutable) */ __webpack_exports__["getWeekViewHeader"] = getWeekViewHeader;
 /* harmony export (immutable) */ __webpack_exports__["getWeekView"] = getWeekView;
 /* harmony export (immutable) */ __webpack_exports__["getMonthView"] = getMonthView;
@@ -732,11 +733,12 @@ function getWeekView(_a) {
     var startOfViewWeek = __WEBPACK_IMPORTED_MODULE_21_date_fns_start_of_week___default()(viewDate, { weekStartsOn: weekStartsOn });
     var endOfViewWeek = __WEBPACK_IMPORTED_MODULE_9_date_fns_end_of_week___default()(viewDate, { weekStartsOn: weekStartsOn });
     var maxRange = DAYS_IN_WEEK - excluded.length;
-    var eventsMapped = getEventsInPeriod({
+    var eventsInPeriod = getEventsInPeriod({
         events: events,
         periodStart: startOfViewWeek,
         periodEnd: endOfViewWeek
-    })
+    });
+    var eventsMapped = eventsInPeriod
         .map(function (event) {
         var offset = getWeekViewEventOffset({
             event: event,
@@ -795,7 +797,14 @@ function getWeekView(_a) {
             });
         }
     });
-    return eventRows;
+    return {
+        eventRows: eventRows,
+        period: {
+            events: eventsInPeriod,
+            start: startOfViewWeek,
+            end: endOfViewWeek
+        }
+    };
 }
 function getMonthView(_a) {
     var _b = _a.events, events = _b === void 0 ? [] : _b, viewDate = _a.viewDate, weekStartsOn = _a.weekStartsOn, _c = _a.excluded, excluded = _c === void 0 ? [] : _c, _d = _a.viewStart, viewStart = _d === void 0 ? __WEBPACK_IMPORTED_MODULE_20_date_fns_start_of_month___default()(viewDate) : _d, _e = _a.viewEnd, viewEnd = _e === void 0 ? __WEBPACK_IMPORTED_MODULE_8_date_fns_end_of_month___default()(viewDate) : _e, weekendDays = _a.weekendDays;
@@ -866,7 +875,12 @@ function getMonthView(_a) {
     return {
         rowOffsets: rowOffsets,
         totalDaysVisibleInWeek: totalDaysVisibleInWeek,
-        days: days
+        days: days,
+        period: {
+            start: start,
+            end: end,
+            events: eventsInMonth
+        }
     };
 }
 function getDayView(_a) {
@@ -877,11 +891,12 @@ function getDayView(_a) {
     var startOfView = __WEBPACK_IMPORTED_MODULE_17_date_fns_set_minutes___default()(__WEBPACK_IMPORTED_MODULE_16_date_fns_set_hours___default()(__WEBPACK_IMPORTED_MODULE_18_date_fns_start_of_day___default()(viewDate), dayStart.hour), dayStart.minute);
     var endOfView = __WEBPACK_IMPORTED_MODULE_17_date_fns_set_minutes___default()(__WEBPACK_IMPORTED_MODULE_16_date_fns_set_hours___default()(__WEBPACK_IMPORTED_MODULE_19_date_fns_start_of_minute___default()(__WEBPACK_IMPORTED_MODULE_7_date_fns_end_of_day___default()(viewDate)), dayEnd.hour), dayEnd.minute);
     var previousDayEvents = [];
-    var dayViewEvents = getEventsInPeriod({
+    var eventsInPeriod = getEventsInPeriod({
         events: events.filter(function (event) { return !event.allDay; }),
         periodStart: startOfView,
         periodEnd: endOfView
-    })
+    });
+    var dayViewEvents = eventsInPeriod
         .sort(function (eventA, eventB) {
         return eventA.start.valueOf() - eventB.start.valueOf();
     })
@@ -945,7 +960,12 @@ function getDayView(_a) {
     return {
         events: dayViewEvents,
         width: width,
-        allDayEvents: allDayEvents
+        allDayEvents: allDayEvents,
+        period: {
+            events: eventsInPeriod,
+            start: startOfView,
+            end: endOfView
+        }
     };
 }
 function getDayViewHourGrid(_a) {

@@ -16,7 +16,7 @@ describe('mwlresizable directive', function() {
       'mwl-resizable="resizable" ' +
       'snap-grid="{y: 30}" ' +
       'resize-edges="{top: true, bottom: true}" ' +
-      'resize-margin="{margin: 10}' +
+      'resize-margin="10"' +
       'on-resize-start="onResizeStart()" ' +
       'on-resize-end="onResizeEnd(x, y / 30)" ' +
       'on-resize="onResize(x, y / 30)" ' +
