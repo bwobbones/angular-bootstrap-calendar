@@ -483,7 +483,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SECONDS_IN_DAY", function() { return SECONDS_IN_DAY; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SECONDS_IN_WEEK", function() { return SECONDS_IN_WEEK; });
 /* harmony export (immutable) */ __webpack_exports__["getWeekViewEventOffset"] = getWeekViewEventOffset;
-/* harmony export (immutable) */ __webpack_exports__["getEventsInPeriod"] = getEventsInPeriod;
 /* harmony export (immutable) */ __webpack_exports__["getWeekViewHeader"] = getWeekViewHeader;
 /* harmony export (immutable) */ __webpack_exports__["getWeekView"] = getWeekView;
 /* harmony export (immutable) */ __webpack_exports__["getMonthView"] = getMonthView;
@@ -973,13 +972,14 @@ function getDayViewHourGrid(_a) {
     }
     return hours;
 }
-var EventValidationErrorMessage = {
-    NotArray: 'Events must be an array',
-    StartPropertyMissing: 'Event is missing the `start` property',
-    StartPropertyNotDate: 'Event `start` property should be a javascript date object. Do `new Date(event.start)` to fix it.',
-    EndPropertyNotDate: 'Event `end` property should be a javascript date object. Do `new Date(event.end)` to fix it.',
-    EndsBeforeStart: 'Event `start` property occurs after the `end`'
-};
+var EventValidationErrorMessage;
+(function (EventValidationErrorMessage) {
+    EventValidationErrorMessage["NotArray"] = "Events must be an array";
+    EventValidationErrorMessage["StartPropertyMissing"] = "Event is missing the `start` property";
+    EventValidationErrorMessage["StartPropertyNotDate"] = "Event `start` property should be a javascript date object. Do `new Date(event.start)` to fix it.";
+    EventValidationErrorMessage["EndPropertyNotDate"] = "Event `end` property should be a javascript date object. Do `new Date(event.end)` to fix it.";
+    EventValidationErrorMessage["EndsBeforeStart"] = "Event `start` property occurs after the `end`";
+})(EventValidationErrorMessage || (EventValidationErrorMessage = {}));
 function validateEvents(events, log) {
     var isValid = true;
     function isError(msg, event) {
@@ -3465,6 +3465,7 @@ angular
 
     interact($element[0]).resizable({
       edges: $parse($attrs.resizeEdges)($scope),
+      margin: $parse($attrs.resizeMargin)($scope),
       snap: snap,
       onstart: function(event) {
 
@@ -4111,7 +4112,7 @@ angular
 
           return calendarUtilsEvent;
         })
-      }).map(function(eventRow) {
+      }).eventRows.map(function(eventRow) {
 
         eventRow.row = eventRow.row.map(function(rowEvent) {
           rowEvent.event = rowEvent.event.originalEvent;
