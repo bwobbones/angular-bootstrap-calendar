@@ -52,6 +52,7 @@ angular
       var newStart = moment(event.startsAt).add(minutesDiff, 'minutes');
       var newEnd = moment(event.endsAt).add(minutesDiff, 'minutes');
       delete event.tempStartsAt;
+      delete event.tempEndsAt;
 
       vm.onEventTimesChanged({
         calendarEvent: event,
@@ -63,6 +64,7 @@ angular
     vm.eventDragged = function(event, minuteChunksMoved) {
       var minutesDiff = minuteChunksMoved * vm.dayViewSplit;
       event.tempStartsAt = moment(event.startsAt).add(minutesDiff, 'minutes').toDate();
+      event.tempEndsAt = moment(event.endsAt).add(minutesDiff, 'minutes').toDate();
     };
 
     vm.eventResizeComplete = function(event, edge, minuteChunksMoved) {
@@ -75,6 +77,7 @@ angular
         end.add(minutesDiff, 'minutes');
       }
       delete event.tempStartsAt;
+      delete event.tempEndsAt;
 
       vm.onEventTimesChanged({
         calendarEvent: event,
@@ -87,6 +90,8 @@ angular
       var minutesDiff = minuteChunksMoved * vm.dayViewSplit;
       if (edge === 'start') {
         event.tempStartsAt = moment(event.startsAt).add(minutesDiff, 'minutes').toDate();
+      } else if (edge === 'end') {
+        event.tempEndsAt = moment(event.endsAt).add(minutesDiff, 'minutes').toDate();
       }
     };
 

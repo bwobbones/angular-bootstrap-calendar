@@ -43,6 +43,7 @@ angular
       }
 
       delete event.tempStartsAt;
+      delete event.tempEndsAt;
 
       vm.onEventTimesChanged({
         calendarEvent: event,
@@ -77,6 +78,7 @@ angular
     vm.tempTimeChanged = function(event, minuteChunksMoved) {
       var minutesDiff = minuteChunksMoved * vm.dayViewSplit;
       event.tempStartsAt = moment(event.startsAt).add(minutesDiff, 'minutes').toDate();
+      event.tempEndsAt = moment(event.endsAt).add(minutesDiff, 'minutes').toDate();
     };
 
   })

@@ -72,6 +72,7 @@
       <span class="cal-hours">
         <span ng-show="dayEvent.top == 0"><span ng-bind="(dayEvent.event.tempStartsAt || dayEvent.event.startsAt) | calendarDate:'day':true"></span>, </span>
         <span ng-bind="(dayEvent.event.tempStartsAt || dayEvent.event.startsAt) | calendarDate:'time':true"></span>
+         - <span ng-bind="(dayEvent.event.tempEndsAt || dayEvent.event.endsAt) | calendarDate:'time':true"></span>
       </span>
       <a
         href="javascript:;"
