@@ -1510,6 +1510,7 @@ angular
       var newEnd = moment(event.endsAt).add(minutesDiff, 'minutes');
       delete event.tempStartsAt;
       delete event.tempEndsAt;
+      event.dragInProgress = false;
 
       vm.onEventTimesChanged({
         calendarEvent: event,
@@ -1522,6 +1523,7 @@ angular
       var minutesDiff = minuteChunksMoved * vm.dayViewSplit;
       event.tempStartsAt = moment(event.startsAt).add(minutesDiff, 'minutes').toDate();
       event.tempEndsAt = moment(event.endsAt).add(minutesDiff, 'minutes').toDate();
+      event.dragInProgress = true;
     };
 
     vm.eventResizeComplete = function(event, edge, minuteChunksMoved) {
@@ -1535,6 +1537,7 @@ angular
       }
       delete event.tempStartsAt;
       delete event.tempEndsAt;
+      event.dragInProgress = false;
 
       vm.onEventTimesChanged({
         calendarEvent: event,
@@ -1550,6 +1553,7 @@ angular
       } else if (edge === 'end') {
         event.tempEndsAt = moment(event.endsAt).add(minutesDiff, 'minutes').toDate();
       }
+      event.dragInProgress = true;
     };
 
   }])
