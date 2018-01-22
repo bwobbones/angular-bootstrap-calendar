@@ -69,6 +69,7 @@
               on-drag-end="vm.weekDragged(eventRow.event, x / ((vm.dayColumnDimensions.width - (vm.showTimes ? 60 : 0)) / vm.view.days.length), y / 30)"
               mwl-resizable="eventRow.event.resizable === true && eventRow.event.endsAt && !vm.showTimes"
               resize-edges="{left: true, right: true}"
+              resize-margin="10"
               on-resize-end="vm.weekResized(eventRow.event, edge, x / ((vm.dayColumnDimensions.width - (vm.showTimes ? 60 : 0)) / vm.view.days.length))">
               <strong ng-bind="(eventRow.event.tempStartsAt || eventRow.event.startsAt) | calendarDate:'time':true" ng-show="vm.showTimes"></strong>
               <a

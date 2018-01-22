@@ -39,6 +39,7 @@ angular
 
     interact($element[0]).resizable({
       edges: $parse($attrs.resizeEdges)($scope),
+      margin: $parse($attrs.resizeMargin)($scope),
       snap: snap,
       onstart: function(event) {
 
