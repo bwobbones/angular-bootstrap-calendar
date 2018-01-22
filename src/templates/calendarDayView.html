@@ -64,6 +64,7 @@
       auto-scroll="vm.draggableAutoScroll"
       mwl-resizable="dayEvent.event.resizable === true && dayEvent.event.endsAt"
       resize-edges="{top: true, bottom: true}"
+      resize-margin="10"
       on-resize="vm.eventResized(dayEvent.event, edge, y / (vm.dayViewSegmentSize || 30))"
       on-resize-end="vm.eventResizeComplete(dayEvent.event, edge, y / (vm.dayViewSegmentSize || 30))"
       uib-tooltip-html="vm.calendarEventTitle.dayViewTooltip(dayEvent.event) | calendarTrustAsHtml"
