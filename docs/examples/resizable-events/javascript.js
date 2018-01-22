@@ -8,8 +8,8 @@ angular
       {
         title: 'Resizable event',
         color: calendarConfig.colorTypes.warning,
-        startsAt: moment().startOf('month').toDate(),
-        endsAt: moment().startOf('month').add(1, 'hour').toDate(), //ends at is required
+        startsAt: moment().startOf('month').add(2, 'hour').toDate(),
+        endsAt: moment().startOf('month').add(3, 'hour').toDate(), //ends at is required
         resizable: true
       },
       {
